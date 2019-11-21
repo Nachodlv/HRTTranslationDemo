@@ -3,9 +3,9 @@ const { IamAuthenticator } = require('ibm-watson/auth');
 const languageTranslator = new LanguageTranslatorV3({
   version: '2018-05-01',
   authenticator: new IamAuthenticator({
-    apikey: '{apikey}',
+    apikey: 'EUcqUJpowxolnh8cIeAfEp8WZ38FXukAmG5ZDTrGdaJd',
   }),
-  url: '{url}',
+  url: 'https://gateway-fra.watsonplatform.net/language-translator/api',
 });
 
 /**
@@ -57,7 +57,7 @@ function main(params) {
       // pick the language with the highest confidence, and send it back
 
       const translateParams = {
-        text: params,text,
+        text: params.text,
         modelId: 'en-es',
       };
 
@@ -74,7 +74,8 @@ function main(params) {
             headers: { 'Content-Type': 'application/json' }
           });
         }).catch(err => {
-          throw err;
+          console.error('Error while initializing the AI service', err);
+          resolve(getTheErrorResponse('Error while communicating with the language service', defaultLanguage));
         });
          
     } catch (err) {

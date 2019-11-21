@@ -71,7 +71,8 @@ function main(params) {
           });
         })
         .catch(err => {
-          throw err;
+          console.error('Error while initializing the AI service', err);
+          resolve(getTheErrorResponse('Error while communicating with the language service', defaultLanguage));
         });
 
     } catch (err) {
