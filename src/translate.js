@@ -67,9 +67,9 @@ function main(params) {
           resolve({
             statusCode: 200,
             body: {
-              translations: "<translated text>",
-              words: 1,
-              characters: 11,
+              translations: translationResult.translations[0].translation,
+              words: translationResult.word_count,
+              characters: translationResult.character_count,
             },
             headers: { 'Content-Type': 'application/json' }
           });
