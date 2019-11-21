@@ -75,7 +75,7 @@ function main(params) {
           });
         }).catch(err => {
           console.error('Error while translating the text', err);
-          resolve(getTheErrorResponse('Error while translating the text', defaultLanguage));
+          resolve(getTheErrorResponse(JSON.stringify(translationResult, null, 2), defaultLanguage));
         });
          
     } catch (err) {
