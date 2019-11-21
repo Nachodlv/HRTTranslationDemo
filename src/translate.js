@@ -7,6 +7,7 @@ const languageTranslator = new LanguageTranslatorV3({
   }),
   url: 'https://gateway-fra.watsonplatform.net/language-translator/api',
 });
+const preferedLanguage = 'en';
 
 /**
  * Helper 
@@ -17,7 +18,7 @@ function getTheErrorResponse(errorMessage, defaultLanguage) {
   return {
     statusCode: 200,
     body: {
-      language: defaultLanguage || 'en',
+      language: defaultLanguage || preferedLanguage,
       errorMessage: errorMessage
     }
   };
@@ -43,36 +44,27 @@ function main(params) {
 
     try {
 
-      // *******TODO**********
-      // - Call the language translation API of the translation service
-      // see: https://cloud.ibm.com/apidocs/language-translator?code=node#translate
-      // - if successful, resolve exatly like shown below with the
-      // translated text in the "translation" property,
-      // the number of translated words in "words"
-      // and the number of characters in "characters".
-
-      // in case of errors during the call resolve with an error message according to the pattern
-      // found in the catch clause below
-
-      // pick the language with the highest confidence, and send it back
+      if(params.body.language === preferedLanguage) {
+        sendBody(resolve, {
+            translations: params.text,
+            words: params.text.split(' ').length,
+            characters: params.text.length
+          });
+      }
 
       const translateParams = {
         text: params.body.text,
-        modelId: params.body.language + '-en',
+        modelId: params.body.language + '-' + preferedLanguage,
       };
 
       languageTranslator.translate(translateParams)
         .then(translationResult => {
           const res = translationResult.result;
-          resolve({
-            statusCode: 200,
-            body: {
+          sendBody(resolve, {
               translations: res.translations[0].translation,
               words: res.word_count,
               characters: res.character_count,
-            },
-            headers: { 'Content-Type': 'application/json' }
-          });
+            });
         }).catch(err => {
           console.error('Error while translating the text', err);
           resolve(getTheErrorResponse(JSON.stringify(params), defaultLanguage));
@@ -83,4 +75,12 @@ function main(params) {
       resolve(getTheErrorResponse('Error while communicating with the language service', defaultLanguage));
     }
   });
+}
+
+function sendBody(resolve, body) {
+  resolve({
+    statusCode: 200,
+    body,
+    headers: { 'Content-Type': 'application/json' }
+  })
 }
