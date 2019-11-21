@@ -57,25 +57,25 @@ function main(params) {
       // pick the language with the highest confidence, and send it back
 
       const translateParams = {
-        text: params.text,
-        modelId: 'en-es',
+        text: params.body.text,
+        modelId: params.body.language + '-en',
       };
 
       languageTranslator.translate(translateParams)
         .then(translationResult => {
-          console.log(JSON.stringify(translationResult, null, 2));
+          const res = translationResult.result;
           resolve({
             statusCode: 200,
             body: {
-              translations: translationResult.translations[0].translation,
-              words: translationResult.word_count,
-              characters: translationResult.character_count,
+              translations: res.translations[0].translation,
+              words: res.word_count,
+              characters: res.character_count,
             },
             headers: { 'Content-Type': 'application/json' }
           });
         }).catch(err => {
           console.error('Error while translating the text', err);
-          resolve(getTheErrorResponse(JSON.stringify(translationResult, null, 2), defaultLanguage));
+          resolve(getTheErrorResponse(JSON.stringify(params), defaultLanguage));
         });
          
     } catch (err) {
