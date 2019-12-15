@@ -46,10 +46,11 @@ function main(params) {
 
       if(params.body.language === preferedLanguage) {
         sendBody(resolve, {
-            translations: params.text,
-            words: params.text.split(' ').length,
-            characters: params.text.length
+            translations: params.body.text,
+            words: params.body.text.split(' ').length,
+            characters: params.body.text.length
           });
+        return;
       }
 
       const translateParams = {
